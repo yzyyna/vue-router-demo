@@ -1,4 +1,16 @@
-# General CodeKit files to ignore
-config.codekit
-config.codekit3
-/min
+.DS_Store
+node_modules/
+/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+/src/views/operation/maintenanceMonitor/index copy.vue
