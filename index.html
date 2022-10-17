@@ -4,22 +4,30 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.ico" />
     <title>Vue Router demo</title>
   </head>
   <body>
-    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@2.7/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-router@3/dist/vue-router.js"></script>
+    <link type="text/css" rel="stylesheet" href="style.css" />
 
     <div id="app">
-      <h1>☺☺☺</h1>
+      <h1>😈</h1>
       <p>
         <!-- 使用 router-link 组件来导航. -->
         <!-- 通过传入 `to` 属性指定链接. -->
         <!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
         <router-link to="/foo">Go to Foo</router-link>
         <router-link to="/bar">Go to Bar</router-link>
-        <router-link to="/user/0">Go to User</router-link>
-        <router-link to="/user/1">Go to User</router-link>
+        <router-link to="/user-fff">Go to Any</router-link>
+        <!-- 动态路由 -->
+        <router-link to="/user/0">Go to user/:id</router-link>
+        <router-link to="/user/1">Go to user/:id</router-link>
+        <!-- 你可以在一个路由中设置多段“路径参数”，对应的值都会设置到 $route.params 中。 -->
+        <router-link to="/user/aa/sub/2?bb=123&cc=dte"
+          >Go to user/:name/sub/:id</router-link
+        >
       </p>
       <button @click="toUser">to User</button>
       <!-- 路由出口 -->
@@ -39,8 +47,29 @@
       // 可以在每个组件内使用。于是，我们可以更新 User 的模板，输出当前用户的 ID
       const User = {
         template: "<div>User {{ $route.params.id }}</div>",
+        // 提醒一下，当使用路由参数时，例如从 /user/foo 导航到 /user/bar，
+        // 原来的组件实例会被复用。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。
+        // 不过，这也意味着组件的生命周期钩子不会再被调用。
+        // 复用组件时，想对路由参数的变化作出响应的话，你可以简单地 watch (监测变化) $route 对象：
+        // 或者使用 2.2 中引入的 beforeRouteUpdate 导航守卫：
+        beforeRouteUpdate(to, from, next) {
+          // react to route changes...
+          // don't forget to call next()
+          console.log("$route changed in beforeRouteUpdate", to, from);
+          next();
+        },
+      };
+      const UserSub = {
+        template: `<div>User Sub {{$route.params.name}},{{$route.params.id}}
+          ,query:{{$route.query.bb}}{{$route.query.cc}}</div>`,
       };
 
+      const Any = {
+        template: `<div>Any{{$route.params.pathMatch}}</div>`,
+      };
+      const NotFound = {
+        template: `<div>Not Found</div>`,
+      };
       // 2. 定义路由
       // 每个路由应该映射一个组件。 其中"component" 可以是
       // 通过 Vue.extend() 创建的组件构造器，
@@ -50,6 +79,24 @@
         { path: "/foo", component: Foo },
         { path: "/bar", component: Bar },
         { path: "/user/:id", component: User },
+        {
+          path: "/user/:name/sub/:id",
+          component: UserSub,
+        },
+        // 捕获所有路由或 404 Not found 路由
+        // 当使用一个通配符时，$route.params 内会自动添加一个名为 pathMatch 参数。
+        // 它包含了 URL 通过通配符被匹配的部分：
+        // 当使用通配符路由时，请确保路由的顺序是正确的，
+        // 也就是说含有通配符的路由应该放在最后。路由 { path: '*' }
+        // 通常用于客户端 404 错误。如果你使用了History 模式，请确保正确配置你的服务器。
+        {
+          path: "*",
+          component: NotFound,
+        },
+        {
+          path: "/user-*",
+          component: Any,
+        },
       ];
 
       // 3. 创建 router 实例，然后传 `routes` 配置
@@ -66,6 +113,12 @@
         methods: {
           toUser() {
             this.$router.push("/user/5");
+          },
+        },
+        watch: {
+          $route(to, from) {
+            // 对路由变化作出响应...
+            // console.log("$route changed", to, from);
           },
         },
       }).$mount("#app");

@@ -1,0 +1,4 @@
+/* change inline element to block element */
+a {
+  display: block;
+}
