@@ -33,6 +33,7 @@
       <!-- 路由出口 -->
       <!-- 路由匹配到的组件将渲染在这里 -->
       <router-view></router-view>
+      <button @click="toIndex2">Go to Nested Routes demo</button>
     </div>
     <script>
       // 0. 如果使用模块化机制编程，导入Vue和VueRouter，要调用 Vue.use(VueRouter)
@@ -110,9 +111,17 @@
       // 从而让整个应用都有路由功能
       const app = new Vue({
         router,
+        data() {
+          return {
+            serverRoot: "https://yzyyna.github.io/",
+          };
+        },
         methods: {
           toUser() {
             this.$router.push("/user/5");
+          },
+          toIndex2() {
+            window.location = this.serverRoot + "index2.html";
           },
         },
         watch: {
