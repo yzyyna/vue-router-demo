@@ -17,12 +17,22 @@
         渲染最高级路由匹配到的组件。
         同样地，一个被渲染组件同样可以包含自己的嵌套 <router-view>。
         例如，在 User 组件的模板添加一个 <router-view> -->
+      <router-link to="/">Go to Home route</router-link>
+      <router-link to="/user/2">Go to /user/:id path</router-link>
+      <router-link to="/user/2/">Go to /user/:id Home path</router-link>
+      <router-link to="/user/3/profile"
+        >Go to /user/:id sub /profile</router-link
+      >
+      <router-link to="/user/3/posts">Go to /user/:id sub /posts</router-link>
+      <router-link to="/user/4/dd">Go to /user/:id not found/</router-link>
       <router-view></router-view>
     </div>
     <script>
       const Root = {
         template: `
-            <div>Root</div>`,
+            <div>
+              Root              
+              </div>`,
       };
       const User = {
         template: `
