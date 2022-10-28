@@ -26,6 +26,7 @@
       <router-link to="/user/3/posts">Go to /user/:id sub /posts</router-link>
       <router-link to="/user/4/dd">Go to /user/:id not found/</router-link>
       <router-view></router-view>
+      <button @click="backToMain">back</button>
     </div>
     <script>
       const Root = {
@@ -113,7 +114,14 @@
           },
         ],
       });
-      const app = new Vue({ router }).$mount("#app");
+      const app = new Vue({
+        router,
+        methods: {
+          backToMain() {
+            window.location = "https://yzyyna.github.io/vue_router_demo";
+          },
+        },
+      }).$mount("#app");
     </script>
   </body>
 </html>
