@@ -34,7 +34,10 @@
       <!-- 路由出口 -->
       <!-- 路由匹配到的组件将渲染在这里 -->
       <router-view></router-view>
-      <button @click="toIndex2">Go to Nested Routes demo</button>
+      <button @click="toIndex('nestedRoutes')">Go to Nested Routes demo</button>
+      <button @click="toIndex('programmaticNavigation')">
+        Go to Programmatic Navigation demo
+      </button>
     </div>
     <script>
       // 0. 如果使用模块化机制编程，导入Vue和VueRouter，要调用 Vue.use(VueRouter)
@@ -119,15 +122,15 @@
         router,
         data() {
           return {
-            serverRoot: "https://yzyyna.github.io/",
+            serverRoot: "https://yzyyna.github.io/vue_router_demo/",
           };
         },
         methods: {
           toUser() {
             this.$router.push("/user/5");
           },
-          toIndex2() {
-            window.location = this.serverRoot + "vue_router_demo/index2.html";
+          toIndex(path) {
+            window.location = this.serverRoot + path;
           },
         },
         watch: {
