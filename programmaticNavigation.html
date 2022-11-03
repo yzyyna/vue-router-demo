@@ -11,9 +11,81 @@
     <script src="https://unpkg.com/vue@2.7/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-router@3/dist/vue-router.js"></script>
     <link type="text/css" rel="stylesheet" href="style.css" />
-    <div id="app"></div>
+    <div id="app">
+      main
+      <router-link :to="'/'">to Home</router-link>
+      <router-link :to="'/c1'">to Component1</router-link>
+      <router-link :to="'/c2'">to Component2</router-link>
+      <button @click="pushTo('/')">Programmatic Navigation to Home</button>
+      <button @click="pushTo('/home')">Programmatic Navigation to Home</button>
+      <button @click="pushTo('/c1')">
+        Programmatic Navigation to Component1
+      </button>
+      <button @click="pushTo2('/c1',11,22)">
+        Programmatic Navigation to Component1(query=11,param=22) params This
+        will NOT work
+      </button>
+      <button @click="pushTo3('/c1',11,22)">
+        Programmatic Navigation to Component1(query=11,param=22) params This
+        will work
+      </button>
+      <button @click="pushTo('/c2')">
+        Programmatic Navigation to Component2
+      </button>
+      <hr />
+      router-view
+      <router-view></router-view>
+    </div>
     <script type="text/javascript">
-      const app = new Vue({}).$mount("#app");
+      const Home = {
+        template: `<div>Home</div>`,
+      };
+      const Component1 = {
+        template: `<div>component1
+          {{$route.query}}
+          {{$route.params}}
+          </div>`,
+      };
+      const Component2 = {
+        template: `<div>component2</div>`,
+      };
+      const NotFound = {
+        template: `<div>404</div>`,
+      };
+      const router = new VueRouter({
+        routes: [
+          { path: "/c1", component: Component1 },
+          { path: "/c1/:param1", component: Component1 },
+          { path: "/", component: Home },
+          { path: "/home", component: Home },
+          {
+            path: "/c2",
+            component: Component2,
+          },
+          { path: "*", component: NotFound },
+        ],
+      });
+      const app = new Vue({
+        router,
+        methods: {
+          pushTo(path) {
+            this.$router.push(path);
+          },
+          pushTo2(p, q, param) {
+            this.$router.push({
+              path: p,
+              query: { q: q },
+              params: { p: param },
+            });
+          },
+          pushTo3(p, q, param) {
+            this.$router.push({
+              path: p + "/" + param,
+              query: { q: q },
+            });
+          },
+        },
+      }).$mount("#app");
     </script>
   </body>
 </html>
