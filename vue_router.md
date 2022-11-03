@@ -49,6 +49,6 @@ router.push({ path: "/user", params: { userId } }); // -> /user
 ### router.replace(location, onComplete?, onAbort?)
 
 跟 router.push 很像，唯一的不同就是，它不会向 history 添加新记录，而是跟它的方法名一样 —— 替换掉当前的 history 记录。
-|声明式 |编 c 程式|
+|声明式 |编程式|
 |---|---|
 |<router-link :to="..." replace>|router.replace(...)|
