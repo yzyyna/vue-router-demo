@@ -38,6 +38,9 @@
       <button @click="toIndex('programmaticNavigation')">
         Go to Programmatic Navigation demo
       </button>
+      <button @click="toIndex('namedRoutes&Views')">
+        Go to Named Routes and Named Views demo
+      </button>
     </div>
     <script>
       // 0. 如果使用模块化机制编程，导入Vue和VueRouter，要调用 Vue.use(VueRouter)
@@ -130,7 +133,13 @@
             this.$router.push("/user/5");
           },
           toIndex(path) {
-            window.location = this.serverRoot + path;
+            const windowHref = window.location.href;
+            (windowHref.includes("file") &&
+              (window.location = window.location.href.replace(
+                "index.html#/",
+                path + ".html"
+              ))) ||
+              (window.location = this.serverRoot + path);
           },
         },
         watch: {
