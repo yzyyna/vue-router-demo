@@ -134,11 +134,11 @@
           },
           toIndex(path) {
             const windowHref = window.location.href;
+            const indexStart = windowHref.indexOf("index");
+            const localPath = windowHref.substr(0, indexStart);
+            // 判断是否在 GitHub Pages 上（判断路径）
             (windowHref.includes("file") &&
-              (window.location = window.location.href.replace(
-                "index.html#/",
-                path + ".html"
-              ))) ||
+              (window.location = localPath + path + ".html")) ||
               (window.location = this.serverRoot + path);
           },
         },
