@@ -18,6 +18,8 @@
       <router-link :to="{name:'user',params:{userId:22},query:{q:'query'}}"
         >To User(Named Routes)</router-link
       >
+      <!-- named views -->
+      <router-link to="/namedViews">To Named Views demo component</router-link>
       <button @click="pushTo">To User(Named Routes)</button>
       <router-view></router-view>
     </div>
@@ -35,6 +37,25 @@
       const User = {
         template: template,
       };
+      const NamedViews = {
+        template: `
+        <div>
+          <h1>Named Views</h1>
+          <NavBar />
+          <router-view />
+          <router-view name="sub" />
+        </div>
+        `,
+      };
+      const NamedViewsChild1 = {
+        template: "<div>Child1</div>",
+      };
+      const NamedViewsChild2 = {
+        template: "<div>Child2</div>",
+      };
+      const NamedViewsChild3 = {
+        template: "<div>Child3</div>",
+      };
       const router = new VueRouter({
         routes: [
           {
@@ -47,7 +68,30 @@
             name: "user",
             component: User,
           },
+          ,
+          {
+            path: "/namedViews",
+            component: NamedViews,
+            children: [
+              {
+                path: "single",
+                component: NamedViewsChild1,
+              },
+              {
+                path: "sub",
+                components: {
+                  default: NamedViewsChild2,
+                  sub: NamedViewsChild3,
+                },
+              },
+            ],
+          },
         ],
+      });
+      Vue.component("NavBar", {
+        template: `<div><router-link to="/">To Home</router-link>
+          <router-link to="/namedViews/single">To Named Views single</router-link>
+          <router-link to="/namedViews/sub">To Named Views Sub</router-link></div>`,
       });
       const app = new Vue({
         router,
