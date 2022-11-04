@@ -11,7 +11,60 @@
     <script src="https://unpkg.com/vue@2.7/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-router@3/dist/vue-router.js"></script>
     <link type="text/css" rel="stylesheet" href="style.css" />
-    <div id="app"></div>
-    <script type="text/javascript"></script>
+    <div id="app">
+      A
+      <router-link to="/">To Home</router-link>
+      <router-link :to="{path:'/user/11?q=1uery'}">To User(Routes)</router-link>
+      <router-link :to="{name:'user',params:{userId:22},query:{q:'query'}}"
+        >To User(Named Routes)</router-link
+      >
+      <button @click="pushTo">To User(Named Routes)</button>
+      <router-view></router-view>
+    </div>
+    <script type="text/javascript">
+      const template = `
+                  <div>
+                    name:{{$route.name}}<br />
+                    path:{{$route.path}}
+                    <div>query:{{$route.query}}</div>
+                    <div>params:{{$route.params}}</div>
+                  </div>`;
+      const Home = {
+        template: template,
+      };
+      const User = {
+        template: template,
+      };
+      const router = new VueRouter({
+        routes: [
+          {
+            path: "/",
+            name: "home",
+            component: Home,
+          },
+          {
+            path: "/user/:userId",
+            name: "user",
+            component: User,
+          },
+        ],
+      });
+      const app = new Vue({
+        router,
+        methods: {
+          pushTo() {
+            this.$router.push({
+              name: "user",
+              query: {
+                q: "query",
+              },
+              params: {
+                userId: 33,
+              },
+            });
+          },
+        },
+      }).$mount("#app");
+    </script>
   </body>
 </html>
