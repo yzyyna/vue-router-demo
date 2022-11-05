@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Redirect and Alias demo</title>
+  </head>
+  <body>
+    <script src="https://unpkg.com/vue@2.7/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router@3/dist/vue-router.js"></script>
+    <link type="text/css" rel="stylesheet" href="style.css" />
+    <div id="app">
+      {{aa}}
+      <router-link to="/a">To A</router-link>
+      <router-link to="/b">To B</router-link>
+      <router-link to="/c">To C(redirect to /a)</router-link>
+      <router-link to="/d">To D(redirect to /a,name)</router-link>
+      <router-link to="/e">To E(alias of /a)</router-link>
+      <router-link to="/f">To F</router-link>
+      <router-link to="/f/g">To F/G</router-link>
+      <router-view></router-view>
+    </div>
+    <script type="text/javascript">
+      const A = {
+        template: `<div>A</div>`,
+      };
+      const B = {
+        template: `<div>B</div>`,
+      };
+      const NotFound = {
+        template: `<div>Not Found</div>`,
+      };
+      const routes = [
+        {
+          path: "/a",
+          alias: "/e",
+          name: "aa",
+          component: A,
+        },
+        {
+          path: "/b",
+          component: B,
+        },
+        {
+          path: "/c",
+          redirect: "/a",
+        },
+
+        {
+          path: "/d",
+          redirect: {
+            name: "aa",
+          },
+        },
+        {
+          path: "/*",
+          component: NotFound,
+        },
+      ];
+      const router = new VueRouter({
+        routes,
+      });
+      const app = new Vue({
+        router,
+        el: "#app",
+        data() {
+          return {
+            aa: "aa",
+          };
+        },
+      });
+    </script>
+  </body>
+</html>
