@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Passing Props to Route Components demo</title>
+  </head>
+  <body>
+    <script src="https://unpkg.com/vue@2.7/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router@3/dist/vue-router.js"></script>
+    <link type="text/css" rel="stylesheet" href="style.css" />
+    <div id="app">
+      <h1>Route props</h1>
+      <ul>
+        <li>
+          <router-link to="/"
+            >/ 【 path: "/", component: Hello 】, // No props, no nothing
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/hello/you"
+            >/hello/you【 path: "/hello/:name", component: Hello, props: true
+            】, // Pass route.params to props
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/static"
+            >/static【 path: "/static", component: Hello, props: 【 name:
+            "world" 】 】, // static values
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/dynamic/1"
+            >/dynamic/1 【 path: "/dynamic/:years", component: Hello, props:
+            dynamicPropsFn 】, // custom logic for mapping between route and
+            props</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/attrs"
+            >/attrs 【 path: "/attrs", component: Hello, props: 【 name: "attrs"
+            】 】,</router-link
+          >
+        </li>
+      </ul>
+      <img src="./assets/img/passing_props_to_route_components.png" />
+      <router-view class="view" foo="123"></router-view>
+      <script type="text/javascript">
+        function dynamicPropsFn(route) {
+          const now = new Date();
+          return {
+            name: now.getFullYear() + parseInt(route.params.years) + "!",
+          };
+        }
+        const Hello = {
+          template: `<div>
+                        <h2 class="hello">Hello {{name}} {{ $attrs }}</h2>
+                    </div>`,
+          props: ["name"],
+        };
+        const routes = [
+          { path: "/", component: Hello }, // No props, no nothing
+          { path: "/hello/:name", component: Hello, props: true }, // Pass route.params to props
+          { path: "/static", component: Hello, props: { name: "world" } }, // static values
+          { path: "/dynamic/:years", component: Hello, props: dynamicPropsFn }, // custom logic for mapping between route and props
+          { path: "/attrs", component: Hello, props: { name: "attrs" } },
+        ];
+        const router = new VueRouter({
+          routes,
+        });
+        const app = new Vue({
+          router,
+          el: "#app",
+        });
+      </script>
+    </div>
+  </body>
+</html>
