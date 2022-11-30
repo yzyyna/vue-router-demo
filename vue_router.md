@@ -224,3 +224,60 @@ const router = new VueRouter({
 > “别名”的功能让你可以自由地将 UI 结构映射到任意的 URL，而不是受限于配置的嵌套路由结构。
 
 ## Navigation Guards
+
+> “导航”表示路由正在发生改变。
+
+正如其名，vue-router 提供的导航守卫主要用来通过跳转或取消的方式守卫导航。有多种机会植入路由导航过程中：全局的, 单个路由独享的, 或者组件级的。
+
+记住参数或查询的改变并不会触发进入/离开的导航守卫。你可以通过观察 $route 对象来应对这些变化，或使用 beforeRouteUpdate 的组件内守卫。
+
+### 全局前置守卫
+
+你可以使用 router.beforeEach 注册一个全局前置守卫：
+
+```js
+const router = new VueRouter({ ... })
+
+router.beforeEach((to, from, next) => {
+  // ...
+})
+
+```
+
+当一个导航触发时，全局前置守卫按照创建顺序调用。守卫是异步解析执行，此时导航在所有守卫 resolve 完之前一直处于 **等待中**。
+每个守卫方法接收三个参数：
+
+- to: Route: 即将要进入的目标 路由对象
+
+- from: Route: 当前导航正要离开的路由
+
+- next: Function: 一定要调用该方法来 resolve 这个钩子。执行效果依赖 next 方法的调用参数。
+
+  - next(): 进行管道中的下一个钩子。如果全部钩子执行完了，则导航的状态就是 confirmed (确认的)。
+
+  - next(false): 中断当前的导航。如果浏览器的 URL 改变了 (可能是用户手动或者浏览器后退按钮)，那么 URL 地址会重置到 from 路由对应的地址。
+
+  - next('/') 或者 next({ path: '/' }): 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。你可以向 next 传递任意位置对象，且允许设置诸如 replace: true、name: 'home' 之类的选项以及任何用在 router-link 的 to prop 或 router.push 中的选项。
+
+  - next(error): (2.4.0+) 如果传入 next 的参数是一个 Error 实例，则导航会被终止且该错误会被传递给 router.onError() 注册过的回调。
+
+**确保 next 函数在任何给定的导航守卫中都被严格调用一次。它可以出现多于一次，但是只能在所有的逻辑路径都不重叠的情况下，否则钩子永远都不会被解析或报错。**
+
+这里有一个在用户未能验证身份时重定向到 /login 的示例：
+
+```js
+// BAD
+router.beforeEach((to, from, next) => {
+  if (to.name !== "Login" && !isAuthenticated) next({ name: "Login" });
+  // 如果用户未能验证身份，则 `next` 会被调用两次
+  next();
+});
+```
+
+```js
+// GOOD
+router.beforeEach((to, from, next) => {
+  if (to.name !== "Login" && !isAuthenticated) next({ name: "Login" });
+  else next();
+});
+```

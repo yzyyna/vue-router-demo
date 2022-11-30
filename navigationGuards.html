@@ -12,10 +12,50 @@
     <script src="https://unpkg.com/vue-router@3/dist/vue-router.js"></script>
     <link type="text/css" rel="stylesheet" href="style.css" />
     <div id="app">
+      <router-link to="/">To Home</router-link>
+      <router-link to="/child/c1">To Child1</router-link>
+      <router-link to="/child/c2?a=000">To Child2</router-link>
       <router-view></router-view>
     </div>
+    <!-- flower -->
     <script type="text/javascript">
-      const routes = [];
+      const template = `
+        <div>
+          <p>name:{{$route.name}}</p>
+          <p>path:{{$route.path}}</p>
+          <p>params:{{$route.params}}</p>
+          <p>query:{{$route.query}}</p>
+        </div>
+        `;
+      const Home = {
+        template: template,
+      };
+      const Child1 = { template: template };
+      const Child2 = { template: template };
+
+      const routes = [
+        {
+          path: "/",
+          name: "Home",
+          component: Home,
+        },
+        {
+          path: "/child",
+          name: "Child",
+          children: [
+            {
+              path: "c1",
+              name: "Child_1",
+              component: Child1,
+            },
+            {
+              path: "c2",
+              name: "Child_2",
+              component: Child2,
+            },
+          ],
+        },
+      ];
       const router = new VueRouter({
         routes,
       });
