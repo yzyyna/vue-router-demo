@@ -249,7 +249,7 @@ router.beforeEach((to, from, next) => {
 
 - to: Route: 即将要进入的目标 路由对象
 
-- from: Route: 当前导航正要离开的路由
+- from: Route: **当前导航正要离开的路由**
 
 - next: Function: 一定要调用该方法来 resolve 这个钩子。执行效果依赖 next 方法的调用参数。
 
@@ -279,5 +279,19 @@ router.beforeEach((to, from, next) => {
 router.beforeEach((to, from, next) => {
   if (to.name !== "Login" && !isAuthenticated) next({ name: "Login" });
   else next();
+});
+```
+
+### 全局解析守卫
+
+> 在 **2.5.0+** 你可以用 router.beforeResolve 注册一个全局守卫。这和 router.beforeEach 类似，区别是在导航被确认之前，**同时在所有组件内守卫和异步路由组件被解析之后**，解析守卫就被调用。
+
+### 全局后置钩子
+
+> 你也可以注册全局后置钩子，然而和守卫不同的是，这些钩子不会接受 next 函数也不会改变导航本身：
+
+```js
+router.afterEach((to, from) => {
+  // ...
 });
 ```
