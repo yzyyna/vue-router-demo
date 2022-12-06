@@ -1,7 +1,7 @@
-const log = function (...rest) {
+const log = function (title, ...rest) {
   console.log(
-    "%c*** Global Resolve Guards ***\n",
-    "color:green;font-size:1.1rem;background:gray",
+    "%c*** " + title + " ***\n",
+    "color:tomato;font-size:1.1rem;background:gray",
     ...rest
   );
 };

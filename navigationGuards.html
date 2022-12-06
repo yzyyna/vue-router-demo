@@ -32,6 +32,27 @@
         `;
       const Home = {
         template: template,
+        beforeRouteEnter(to, from, next) {
+          log("beforeRouteEnter", to, from);
+          next();
+          // 在渲染该组件的对应路由被 confirm 前调用
+          // 不！能！获取组件实例 `this`
+          // 因为当守卫执行前，组件实例还没被创建
+        },
+        beforeRouteUpdate(to, from, next) {
+          log("beforeRouteUpdate", to, from);
+          next();
+          // 在当前路由改变，但是该组件被复用时调用
+          // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+          // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+          // 可以访问组件实例 `this`
+        },
+        beforeRouteLeave(to, from, next) {
+          log("beforeRouteLeave", to, from);
+          next();
+          // 导航离开该组件的对应路由时调用
+          // 可以访问组件实例 `this`
+        },
       };
       const Child = {
         template: `
@@ -40,7 +61,30 @@
             <router-view></router-view>  
           </div>`,
       };
-      const Child1 = { template: template };
+      const Child1 = {
+        template: template,
+        beforeRouteEnter(to, from, next) {
+          log("beforeRouteEnter", to, from);
+          next();
+          // 在渲染该组件的对应路由被 confirm 前调用
+          // 不！能！获取组件实例 `this`
+          // 因为当守卫执行前，组件实例还没被创建
+        },
+        beforeRouteUpdate(to, from, next) {
+          log("beforeRouteUpdate", to, from);
+          next();
+          // 在当前路由改变，但是该组件被复用时调用
+          // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+          // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+          // 可以访问组件实例 `this`
+        },
+        beforeRouteLeave(to, from, next) {
+          log("beforeRouteLeave", to, from);
+          next();
+          // 导航离开该组件的对应路由时调用
+          // 可以访问组件实例 `this`
+        },
+      };
       const Child2 = { template: template };
       const NotFound = { template };
 
@@ -53,6 +97,11 @@
           path: "/",
           name: "Home",
           component: Home,
+          beforeEnter: (to, form, next) => {
+            log("Per-Route Guard", to, form);
+            // 此处不调用 next()，路由不会继续导航
+            next();
+          },
         },
         {
           path: "/dd",
@@ -81,13 +130,7 @@
         routes,
       });
       router.beforeEach((to, form, next) => {
-        console.log(
-          "%c*** Global Before Guards ***\n",
-          "color:green;font-size:1.1rem;background:gray",
-          to,
-          "\n",
-          form
-        );
+        log("Global Before Guards", to, "\n", form);
         const path = to.path;
         // 进行管道中的下一个钩子。如果全部钩子执行完了，则导航的状态就是 confirmed (确认的)。
         next();
@@ -102,10 +145,15 @@
       });
       router.beforeResolve((to, form, next) => {
         const path = to.path;
-        log(to, "\n", form);
+        log("Global Resolve Guards", to, "\n", form);
         // 不会导航出页面
         // next(false);
-        (path.includes("sub") || next("/sub/cc")) && next(); //不是child2的所有路由去child1
+        // (path.includes("sub") || next("/sub/cc")) && next(); //不是child2的所有路由去child1
+        next();
+      });
+      // global after hooks,不会接受 next 函数也不会改变导航本身：
+      router.afterEach((to, form) => {
+        log("Global After Hooks", to, "\n", form);
       });
       const app = new Vue({
         el: "#app",
